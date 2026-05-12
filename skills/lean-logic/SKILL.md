@@ -1,6 +1,6 @@
 # lean-logic
 
-Use the `lean_check` tool to formally verify logical reasoning with the Lean 4 theorem prover. This gives 100% machine-checked certainty that a logical deduction is correct.
+**Description**: Verify propositional and predicate logic with Lean 4. Use for checking logical implications, equivalences, quantifier reasoning, and multi-step deductive arguments.
 
 ## When to Use
 

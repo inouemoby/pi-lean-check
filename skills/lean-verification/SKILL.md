@@ -1,6 +1,6 @@
 # lean-verification
 
-Use the `lean_check` tool to verify program correctness, algorithmic invariants, and functional specifications using Lean 4. This treats your code as formal mathematical objects and checks that your reasoning about them is logically watertight.
+**Description**: Verify program correctness with Lean 4. Use for loop invariants, data structure properties, sorting correctness, state machine safety, termination proofs, and behavioral equivalence.
 
 ## When to Use
 

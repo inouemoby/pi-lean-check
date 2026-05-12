@@ -1,6 +1,6 @@
 # lean-math
 
-Use the `lean_check` tool to verify mathematical theorems, proofs, and calculations using Lean 4. The `native_decide` and `omega` tactics can automatically decide many arithmetic, linear, and combinatorial statements.
+**Description**: Verify mathematical proofs with Lean 4. Use for arithmetic, induction, number theory, divisibility, inequalities, sequences, and algebraic identities.
 
 ## When to Use
 
