@@ -252,4 +252,4 @@ If invalid:
 - Performance properties (time complexity) cannot be verified
 - Probabilistic algorithms cannot be verified
 - Concurrency is difficult to model without advanced libraries
-- Large programs may produce proofs too long for the LLM context window
+- Large programs may produce proofs too long for the context window

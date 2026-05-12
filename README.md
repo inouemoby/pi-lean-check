@@ -1,6 +1,6 @@
 # pi-lean-check
 
-Formal verification for [pi coding agent](https://github.com/earendil-works/pi-mono) using Lean 4. Auto-downloads the Lean theorem prover on first use — no manual setup required. LLMs can call `lean_check` to verify logical reasoning, mathematical proofs, and program correctness with 100% machine-checked certainty.
+Formal verification for [pi coding agent](https://github.com/earendil-works/pi-mono) using Lean 4. Auto-downloads the Lean theorem prover on first use — no manual setup required. Use `lean_check` to verify logical reasoning, mathematical proofs, and program correctness with 100% machine-checked certainty.
 
 ## Install
 
@@ -18,7 +18,7 @@ On first use, Lean 4 (~754MB) is downloaded and cached automatically. All subseq
 
 ## Skills
 
-Three built-in skill files teach the LLM how to use Lean:
+Three built-in skill files teach how to use Lean:
 
 | Skill | Focus | Examples |
 |-------|-------|----------|
@@ -28,7 +28,7 @@ Three built-in skill files teach the LLM how to use Lean:
 
 ## Usage
 
-LLM calls `lean_check` with Lean 4 code:
+Call `lean_check` with Lean 4 code:
 
 ```lean
 example : 1 + 1 = 2 := by
