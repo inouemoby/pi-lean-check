@@ -1,6 +1,11 @@
-# lean-verification
+---
+name: lean-verification
+description: Verify program correctness with the Lean 4 theorem prover via lean_check tool. Use for loop invariants, data structure properties (BST, heaps), sorting algorithm correctness, state machine safety/liveness, termination proofs, memory safety, and behavioral equivalence of implementations.
+---
 
-**Description**: Verify program correctness with Lean 4. Use for loop invariants, data structure properties, sorting correctness, state machine safety, termination proofs, and behavioral equivalence.
+# Lean Program Verification
+
+Use the `lean_check` tool to verify program correctness, algorithmic invariants, and functional specifications using Lean 4. This treats your code as formal mathematical objects and checks that your reasoning about them is logically watertight.
 
 ## When to Use
 

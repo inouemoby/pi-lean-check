@@ -1,6 +1,11 @@
-# lean-math
+---
+name: lean-math
+description: Verify mathematical proofs with the Lean 4 theorem prover via lean_check tool. Use for arithmetic identities, induction, number theory (divisibility, GCD, primes), inequalities, sequences, recurrences, and algebraic manipulations. Supports native_decide and omega tactics.
+---
 
-**Description**: Verify mathematical proofs with Lean 4. Use for arithmetic, induction, number theory, divisibility, inequalities, sequences, and algebraic identities.
+# Lean Mathematical Proofs
+
+Use the `lean_check` tool to verify mathematical theorems, proofs, and calculations using Lean 4. The `native_decide` and `omega` tactics can automatically decide many arithmetic, linear, and combinatorial statements.
 
 ## When to Use
 
