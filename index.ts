@@ -17,6 +17,7 @@ interface LeanError {
 interface LeanResult {
   valid: boolean;
   errors: LeanError[];
+  warnings: LeanError[];
   messages: string[];
 }
 
@@ -212,22 +213,35 @@ function runLean(code: string, leanBin: string): LeanResult {
 
     const output = (result.stdout || "") + "\n" + (result.stderr || "");
     const errors: LeanError[] = [];
+    const warnings: LeanError[] = [];
     const messages: string[] = [];
 
     for (const line of output.split("\n")) {
-      const errMatch = line.match(/(.+\.lean):(\d+):(\d+):\s*(?:error|warning):\s*(.+)/);
+      const errMatch = line.match(/(.+\.lean):(\d+):(\d+):\s*error:\s*([\s\S]+)/);
       if (errMatch) {
         errors.push({
           line: parseInt(errMatch[2], 10),
           col: parseInt(errMatch[3], 10),
           msg: errMatch[4].trim(),
         });
-      } else if (line.trim()) {
+        continue;
+      }
+      const warnMatch = line.match(/(.+\.lean):(\d+):(\d+):\s*warning:\s*(.+)/);
+      if (warnMatch) {
+        warnings.push({
+          line: parseInt(warnMatch[2], 10),
+          col: parseInt(warnMatch[3], 10),
+          msg: warnMatch[4].trim(),
+        });
+        continue;
+      }
+      if (line.trim()) {
         messages.push(line.trim());
       }
     }
 
-    return { valid: errors.length === 0 && result.status === 0, errors, messages };
+    const valid = errors.length === 0 && result.status === 0;
+    return { valid, errors, warnings, messages };
   } finally {
     try { rmSync(tmpDir, { recursive: true, force: true }); } catch { /* ok */ }
   }
@@ -300,22 +314,31 @@ export default function (pi: ExtensionAPI) {
       const result = runLean(fullCode, leanBin);
 
       if (result.valid) {
-        const clean = result.messages.filter(m => !m.includes("check.lean"));
+        let text = "✓ All proofs verified — logically valid.";
+        if (result.warnings.length > 0) {
+          text += "\n\nWarnings:";
+          for (const w of result.warnings) {
+            text += `\n  ⚠ ${w.line}:${w.col} → ${w.msg}`;
+          }
+        }
         return {
-          content: [{
-            type: "text",
-            text: "✓ All proofs verified — logically valid." + (clean.length > 0 ? "\n" + clean.join("\n") : ""),
-          }],
-          details: { valid: true, errors: [] },
+          content: [{ type: "text", text }],
+          details: { valid: true, errors: [], warnings: result.warnings },
         };
       } else {
-        const errLines = result.errors.map(e => "  " + e.line + ":" + e.col + " → " + e.msg).join("\n");
+        let text = `✗ ${result.errors.length} verification error(s):`;
+        for (const e of result.errors) {
+          text += `\n  ${e.line}:${e.col} → ${e.msg}`;
+        }
+        if (result.warnings.length > 0) {
+          text += "\n\nWarnings:";
+          for (const w of result.warnings) {
+            text += `\n  ⚠ ${w.line}:${w.col} → ${w.msg}`;
+          }
+        }
         return {
-          content: [{
-            type: "text",
-            text: "✗ " + result.errors.length + " verification error(s):\n\n" + errLines,
-          }],
-          details: { valid: false, errors: result.errors },
+          content: [{ type: "text", text }],
+          details: { valid: false, errors: result.errors, warnings: result.warnings },
         };
       }
     },
