@@ -41,7 +41,8 @@ example (A B : Prop) (h : A ∧ B) : B ∧ A := by
 
 Response:
 - `✓` — proof valid, logically correct
-- `✗` — errors with exact line:column locations
+  - Warnings (e.g. `sorry` usage) are shown with line:column
+- `✗` — errors with exact line:column locations and tactic state
 
 ## Commands
 
