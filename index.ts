@@ -135,26 +135,9 @@ async function ensureLean(
   const info = getPlatformInfo();
   if (!info) throw new Error("Unsupported platform: " + platform() + "-" + arch());
 
-  // Check if already cached in the expected path
-  const bp = leanBinaryPath();
-  if (existsSync(bp)) return bp;
-
   // Search for existing lean binary in cache (from previous extraction)
   const cached = findLeanInCache(info);
-  if (cached) {
-    // Copy to expected location for consistency
-    mkdirSync(join(bp, ".."), { recursive: true });
-    try {
-      if (platform() === "win32") {
-        execSync('copy "' + cached + '" "' + bp + '"', { stdio: "ignore" });
-      } else {
-        execSync('ln -sf "' + cached + '" "' + bp + '"', { stdio: "ignore" });
-      }
-    } catch { /* if copy fails, just use cached path */ }
-    if (existsSync(bp)) return bp;
-    // Fallback: use the cached path directly
-    return cached;
-  }
+  if (cached) return cached;
 
   // Need to download
   mkdirSync(CACHE_DIR, { recursive: true });
@@ -170,21 +153,10 @@ async function ensureLean(
   extractArchive(archivePath, CACHE_DIR);
   rmSync(archivePath, { force: true });
 
-  // After extraction, find and cache the binary
+  // After extraction, find the binary
   const found = findLeanInCache(info);
   if (found) {
-    mkdirSync(join(bp, ".."), { recursive: true });
-    try {
-      if (platform() === "win32") {
-        execSync('copy "' + found + '" "' + bp + '"', { stdio: "ignore" });
-      } else {
-        execSync('ln -sf "' + found + '" "' + bp + '"', { stdio: "ignore" });
-      }
-    } catch { /* copy can fail */ }
-    if (existsSync(bp)) {
-      onProgress("Lean 4 ready ✓");
-      return bp;
-    }
+    onProgress("Lean 4 ready ✓");
     return found;
   }
 
