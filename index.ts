@@ -226,13 +226,6 @@ const LEAN_PRELUDE = "import Init\n\n";
 export default function (pi: ExtensionAPI) {
   let leanBin = "";
 
-  // Eagerly download on session start (async, non-blocking)
-  pi.on("session_start", async () => {
-    try {
-      leanBin = await ensureLean(() => {});
-    } catch { /* will retry on first tool call */ }
-  });
-
   pi.registerTool({
     name: "lean_check",
     label: "Lean Proof Check",
@@ -255,28 +248,31 @@ export default function (pi: ExtensionAPI) {
       }),
     }),
     async execute(_id, params, signal, onUpdate, _ctx) {
-      // Lazy download if not done yet
+      // Lazy download: only when lean_check is actually called
       if (!leanBin) {
-        try {
-          leanBin = await ensureLean((msg) => {
-            if (!signal?.aborted) {
-              onUpdate?.({ content: [{ type: "text", text: msg }] });
-            }
-          });
-        } catch (err: any) {
-          return {
-            content: [
-              {
-                type: "text",
-                text:
-                  "Lean 4 is not available.\n\n" +
-                  "Error: " + (err.message || err) + "\n\n" +
-                  "Install Lean 4 manually: https://leanprover-community.github.io/get_started.html",
-              },
-            ],
-            isError: true,
-          };
+        // first check cache (fast, no network)
+        const info = getPlatformInfo();
+        if (info) {
+          const cached = findLeanInCache(info);
+          if (cached) {
+            leanBin = cached;
+          }
         }
+      }
+
+      if (!leanBin) {
+        return {
+          content: [
+            {
+              type: "text",
+              text:
+                "Lean 4 binary not found.\n\n" +
+                "Run /lean-install to download and install Lean 4 (~750MB, one-time).\n" +
+                "Or install manually: https://leanprover-community.github.io/get_started.html",
+            },
+          ],
+          isError: true,
+        };
       }
 
       if (signal?.aborted) return { content: [{ type: "text", text: "Cancelled." }] };
@@ -312,6 +308,25 @@ export default function (pi: ExtensionAPI) {
           content: [{ type: "text", text }],
           details: { valid: false, errors: result.errors, warnings: result.warnings },
         };
+      }
+    },
+  });
+
+  // ── /lean-install command (explicit download) ──────────────
+  pi.registerCommand("lean-install", {
+    description: "Download and install Lean 4 binary (~750MB, one-time)",
+    handler: async (_args, ctx) => {
+      if (leanBin && existsSync(leanBin)) {
+        ctx.ui.notify("Lean 4 already installed: " + leanBin, "info");
+        return;
+      }
+      try {
+        leanBin = await ensureLean((msg) => {
+          ctx.ui.notify(msg, "info");
+        });
+        ctx.ui.notify("Lean 4 installed: " + leanBin, "success");
+      } catch (err: any) {
+        ctx.ui.notify("Failed to install Lean 4: " + (err.message || err), "error");
       }
     },
   });

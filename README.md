@@ -1,6 +1,6 @@
 # pi-lean-check
 
-Formal verification for [pi coding agent](https://github.com/earendil-works/pi-mono) using Lean 4. Auto-downloads the Lean theorem prover on first use — no manual setup required. Use `lean_check` to verify logical reasoning, mathematical proofs, and program correctness with 100% machine-checked certainty.
+Formal verification for [pi coding agent](https://github.com/earendil-works/pi-mono) using Lean 4. Use `lean_check` to verify logical reasoning, mathematical proofs, and program correctness with 100% machine-checked certainty.
 
 ## Install
 
@@ -8,7 +8,30 @@ Formal verification for [pi coding agent](https://github.com/earendil-works/pi-m
 pi install git:github.com/inouemoby/pi-lean-check
 ```
 
-On first use, Lean 4 (~754MB) is downloaded and cached automatically. All subsequent calls are instant.
+## Lean 4 Installation
+
+Lean 4 is NOT auto-downloaded. Install before first use:
+
+1. Run `/lean-install` inside pi — downloads from GitHub automatically
+2. Or download manually from https://github.com/leanprover/lean4/releases
+
+### Install Location
+
+Extract the zip into the extension's `bin/` directory:
+
+```
+~/.pi/agent/extensions/pi-lean-check/bin/lean-<version>-<platform>/bin/lean
+```
+
+Examples:
+
+| Platform | Path |
+|----------|------|
+| Windows | `~/.pi/agent/extensions/pi-lean-check/bin/lean-4.29.1-windows/bin/lean.exe` |
+| macOS ARM | `~/.pi/agent/extensions/pi-lean-check/bin/lean-4.29.1-darwin_aarch64/bin/lean` |
+| Linux | `~/.pi/agent/extensions/pi-lean-check/bin/lean-4.29.1-linux/bin/lean` |
+
+Use `/lean-status` to verify installation.
 
 ## Tools
 
@@ -18,10 +41,8 @@ On first use, Lean 4 (~754MB) is downloaded and cached automatically. All subseq
 
 ## Skills
 
-Three built-in skill files teach how to use Lean:
-
 | Skill | Focus | Examples |
-|-------|-------|----------|
+|-------|-------|---------|
 | **lean-logic** | Propositional & predicate logic | Modus ponens, De Morgan, quantifier reasoning, case analysis |
 | **lean-math** | Arithmetic, induction, number theory | Sum formulas, divisibility, GCD, Fibonacci, inequalities |
 | **lean-verification** | Program correctness & invariants | Loop invariants, BST properties, sorting correctness, state machines |
@@ -40,26 +61,20 @@ example (A B : Prop) (h : A ∧ B) : B ∧ A := by
 ```
 
 Response:
-- `✓` — proof valid, logically correct
-  - Warnings (e.g. `sorry` usage) are shown with line:column
+- `✓` — proof valid, logically correct (warnings shown with line:column)
 - `✗` — errors with exact line:column locations and tactic state
 
 ## Commands
 
 | Command | Description |
 |---------|-------------|
-| `/lean-status` | Check if Lean 4 is cached and working |
-
-## What's Available
-
-- **Init library**: propositional logic, predicates, equality, Nat, Int, List, Option
-- **Tactics**: `native_decide`, `omega`, `ring`, `simp`, induction, case analysis
-- **No Mathlib** (not bundled)
+| `/lean-status` | Check if Lean 4 is installed and working |
+| `/lean-install` | Download and install Lean 4 (~750MB, one-time) |
 
 ## Limitations
 
-- ~754MB one-time download on first use
-- No real numbers, analysis, or advanced algebra (no Mathlib)
+- ~750MB one-time download
+- No Mathlib (no real numbers, analysis, or advanced algebra)
 - Proofs must fit within Lean's compile limits
 
 ## License
