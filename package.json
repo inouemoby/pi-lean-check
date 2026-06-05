@@ -2,13 +2,19 @@
   "name": "pi-lean-check",
   "version": "1.0.0",
   "description": "Lean 4 theorem prover integration for pi. Auto-downloads Lean on first use. LLMs can formally verify logical reasoning, mathematical proofs, and program correctness.",
-  "keywords": ["pi-package", "lean", "theorem-prover", "formal-verification", "logic"],
+  "keywords": [
+    "pi-package",
+    "lean",
+    "theorem-prover",
+    "formal-verification",
+    "logic"
+  ],
   "pi": {
-    "extensions": ["./index.ts"],
-    "skills": ["./skills"]
-  },
-  "peerDependencies": {
-    "@earendil-works/pi-coding-agent": "*",
-    "typebox": "*"
+    "extensions": [
+      "./index.ts"
+    ],
+    "skills": [
+      "./skills"
+    ]
   }
 }
